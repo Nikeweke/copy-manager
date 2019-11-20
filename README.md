@@ -1,4 +1,9 @@
 # Copy manager
+### Quick start
+```
+npm i && node main
+```
+
 ### Why i need it?
 When i wanna copy some files and do it sequntially and make one by one.
 
