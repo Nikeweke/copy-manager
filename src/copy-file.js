@@ -2,14 +2,13 @@
 const progress = require('progress-stream');
 const fs       = require('fs')
 const ncp      = require('ncp').ncp;
-const crimsonProgressBar = require("crimson-progressbar");
 const getFolderSize      = require('get-folder-size');
 
 module.exports = {
   copyFile
 }
 
-function copyFile ({index, from: fromPath, to: toPath}) {
+function copyFile ({index, from: fromPath, to: toPath, eventEmitter}) {
   return new Promise((res) => {
     getFilesizeInBytes(fromPath).then((fileSize) => {
       const str = progress({ time: 100 });
@@ -18,9 +17,9 @@ function copyFile ({index, from: fromPath, to: toPath}) {
       console.log('Task #' + (Number(index)+1))
       str.on('progress', (progress) => {
         const percentage = ((progress.transferred*100) / fileSize).toFixed(0)
-        showProgressBar(percentage)
+        eventEmitter.emit('progress', percentage)
       });
-      
+
       const options = {
         transform(read, write) {
           read.pipe(str).pipe(write)
@@ -36,7 +35,7 @@ function copyFile ({index, from: fromPath, to: toPath}) {
         }
       });
     })
-  })
+  }).catch(err => console.log(err))
 }
 
 function getFilesizeInBytes(filename) {
@@ -54,18 +53,4 @@ function getFilesizeInBytes(filename) {
     }
   })
 }
-
-function showProgressBar(currentValue) {
-  crimsonProgressBar.renderProgressBar(
-    currentValue, 
-    100, 
-    "green", 
-    "red", 
-    "■", 
-    "□", 
-    false
-  );  
-}
-
-
 

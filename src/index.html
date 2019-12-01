@@ -1,0 +1,108 @@
+<html>
+<head>
+  <link rel="stylesheet" href="../node_modules/semantic-ui-css/semantic.min.css">
+  <link rel="stylesheet" href="../assets/styles/styles.css">
+  <link rel="stylesheet" href="../assets/styles/bootstrap-grid.min.css">
+
+  <script src="../assets/js/vue.js"></script>
+</head>
+
+<body>
+
+  <header id="titlebar">
+      <div id="drag-region">
+        <div id="window-title">
+          <span>Copy manager</span>
+        </div>
+
+        <div id="window-controls">
+          <div class="button" id="min-button">
+            <span>&#9866;</span>
+          </div>
+          <div class="button" id="max-button">
+            <span>&#10064;</span>
+          </div>
+          <div class="button" id="restore-button">
+            <span>&#10070;</span>
+          </div>
+          <div class="button" id="close-button">
+            <span>&#10005;</span>
+          </div>
+        </div>
+      </div>
+  </header>
+  
+  <div id="main">
+
+    <div class="row">
+      <div class="col-12">
+        <h4 class="ui header" style="color: #fff;">New task</h4>
+        <div class="ui left action input"  style="width: 100%;">
+          <button  @click="pickFile('from')" class="ui button">
+            FROM: Select file
+          </button>
+          <input type="text" v-model="item.from">
+        </div>
+        <br><br>
+    
+        <div class="ui left action input" style="width: 100%;">
+          <button  @click="pickFile('to')" class="ui button">
+              TO: Select folder
+          </button>
+          <input type="text" v-model="item.to">
+        </div>
+        <br><br>
+    
+        <div style="text-align: right;">
+          <button @click="addToStack" class="ui primary button">Create</button>
+        </div>
+        <br>
+      </div>
+    </div> 
+
+
+  
+
+    <h4 class="ui header" style="color: #fff;">
+      Tasks 
+    </h4>
+    <button @click="startTransfering" class="ui green button small">Start transefering</button>
+    <table class="ui inverted celled table" v-if="stack.length !== 0">
+      <thead>
+        <tr>
+          <th>FROM</th>
+          <th>TO</th>
+          <th>PROGRESS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item of stack">
+          <td style="vertical-align: middle;">{{ item.from }}</td>
+          <td style="vertical-align: middle;">{{ item.to }}</td>
+          <td> 
+            <div class="ui indicating progress" style="margin: 0px;" data-percent="27">
+              <div class="bar" style="transition-duration: 300ms; width: 27%;">
+                <div class="progress">27%</div>
+              </div>
+            </div>  
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div v-else>
+      Tasks is empty
+    </div>
+
+  </div>
+</body>
+
+<script>
+  const { remote } = require('electron');
+  const electronDialog = remote.dialog;
+  require('./window')
+  require('./core')
+</script>
+
+
+</html>

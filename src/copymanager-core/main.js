@@ -1,4 +1,4 @@
-const { copyFile } = require('./copy-file')
+const { copyFile } = require('../copy-file')
 const { generalQuestions, specifyPathes } = require('./inquirer')
 
 main()
@@ -13,6 +13,7 @@ function main() {
     } 
   })
 }
+
 
 // ======================================== Call stack
 // holds stack of function calls [{fn: '', params: {}}, ...]
