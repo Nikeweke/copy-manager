@@ -6,7 +6,7 @@ function createWindow () {
   // Create the browser window.
   win = new BrowserWindow({
     // icon: path.join(__dirname, 'assets/logo/64x64.png'),
-    width: 800, 
+    width: 1000, 
     height: 900,
     transparent: true,
     frame: false,
@@ -19,7 +19,7 @@ function createWindow () {
   win.loadFile('./src/index.html')
 
   // dev tools
-  win.webContents.openDevTools()
+  // win.webContents.openDevTools()
 
   // Emitted when the window is closed.
   win.on('closed', () => {

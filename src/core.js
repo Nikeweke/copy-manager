@@ -1,27 +1,31 @@
-
+const electronDialog = require('electron').remote.dialog;
 const { copyFile } = require('./copy-file')
 const EventEmitter = require('events')
 
+require('./window') // window functionality
+
+
 // https://jaketrent.com/post/select-directory-in-electron/
-// Vue 
+const eventEmitter = new EventEmitter();
+const DEFAULT_ITEM = {
+	filename: '',
+	from: '',
+	to: '',
+	progress: 0
+}
+
 new Vue({
 	el: '#main',
 
 	data: () => ({
 		stack: [],
-		item: {
-			filename: '',
-			from: '',
-			to: '',
-			progress: 0
-		}
+		item: {...DEFAULT_ITEM},
+		isTransfering: false,
 	}),
 
 	methods: {
 		pickFile(side) {
 			const dialogProp = side === 'from' ? 'openFile' : 'openDirectory' 
-
-		
 
 			electronDialog.showOpenDialog({
 				properties: [dialogProp]
@@ -44,10 +48,19 @@ new Vue({
 			if (to === '' || from === '') {
 				return
 			}
-
-      console.log(this.item)
-
 			this.stack.push(this.item)
+			this.item = {...DEFAULT_ITEM}
+		},
+
+		clearStack() {
+			const result = confirm('Are you sure?');
+			if (!result) return
+			this.stack = []
+		},
+
+		stopTransfering() {
+			this.isTransfering = false
+			eventEmitter.emit('clear-stack')
 		},
 
 		startTransfering() {
@@ -56,9 +69,11 @@ new Vue({
 				return
 			}
 
-			const eventEmitter = new EventEmitter();
-			eventEmitter.on('progress', (percentage) => {
-				console.log(percentage);
+			this.isTransfering = true
+
+			eventEmitter.on('progress', ({index, percentage}) => {
+				// console.log('task ' + index, percentage);
+				this.stack[index].progress = percentage
 			});
 			
 			// making waterfall
@@ -68,7 +83,7 @@ new Vue({
 			
 			this.stack.reduce(reducer, Promise.resolve())
 				.then(() => {
-					console.log('ALL done \n')
+					alert('All files transfered \n')
 			})
 		}
 

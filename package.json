@@ -24,6 +24,11 @@
       "oneClick": false,
       "perMachine": true
     },
+    "linux": {
+      "target": "deb",
+      "maintainer": "Nikeweke", 
+      "executableName": "Copy manager"
+    },
     "directories": {
       "buildResources": "./assets",
       "output": "./dist"

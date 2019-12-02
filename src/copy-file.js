@@ -9,33 +9,42 @@ module.exports = {
 }
 
 function copyFile ({index, from: fromPath, to: toPath, eventEmitter}) {
-  return new Promise((res) => {
-    getFilesizeInBytes(fromPath).then((fileSize) => {
-      const str = progress({ time: 100 });
-  
-      // wathc for progress and show progress bar in console
-      console.log('Task #' + (Number(index)+1))
-      str.on('progress', (progress) => {
-        const percentage = ((progress.transferred*100) / fileSize).toFixed(0)
-        eventEmitter.emit('progress', percentage)
-      });
 
-      const options = {
-        transform(read, write) {
-          read.pipe(str).pipe(write)
-          write.on('close', () => {
-            res('success')
-          })
-        }
+  const fn = async (res) => {
+    const fileSize = await getFilesizeInBytes(fromPath)
+    const str = progress({ time: 100 });
+
+    // wathc for progress and show progress bar in console
+    str.on('progress', (progress) => {
+      const percentage = ((progress.transferred*100) / fileSize).toFixed(0)
+      eventEmitter.emit('progress', {index, percentage})
+    });
+
+    // attaching to read and write stream
+    const options = {
+      transform(readStream, writeStream) {
+        readStream.pipe(str).pipe(writeStream)
+
+        // when stack is clearing - stop process  
+        eventEmitter.on('clear-stack', () => {
+          readStream.destroy()
+          writeStream.destroy()
+        })
+
+        // after each write stream closed - make process exit via Promise
+        writeStream.on('close', () => res('success'))
       }
-  
-      ncp(fromPath, toPath, options, function (err) {
-        if (err) {
-          return console.error(err);
-        }
-      });
-    })
-  }).catch(err => console.log(err))
+    }
+
+    // copy process
+    ncp(fromPath, toPath, options, function (err) {
+      if (err) {
+        return console.error(err);
+      }
+    });
+  }
+
+  return new Promise(fn).catch(err => console.log(err))
 }
 
 function getFilesizeInBytes(filename) {

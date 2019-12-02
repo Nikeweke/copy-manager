@@ -1,3 +1,5 @@
+const { remote } = require('electron');
+
 function init() {
 	// getting current window
 	let window = remote.getCurrentWindow()
