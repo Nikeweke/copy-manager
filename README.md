@@ -2,7 +2,7 @@
 
 ### Quick start
 ```
-npm i && node main
+npm i && npm start
 ```
 
 ### Why i need it?
