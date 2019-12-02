@@ -81,11 +81,12 @@
               </div>
             </td>
             <td style="vertical-align: middle; word-break:break-all;">
+             {{ item.filename }}
               <div class="ui grey label">
                 {{ item.to }}
               </div>
             </td>
-            <td> 
+            <td style="vertical-align: middle; "> 
               <div class="ui indicating progress" style="margin: 0px;" :data-percent="item.progress">
                 <div class="bar" style="transition-duration: 300ms;" :style="{width: item.progress + '%'}">
                   <div class="progress">{{ item.progress }}%</div>
