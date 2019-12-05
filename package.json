@@ -14,9 +14,15 @@
   "license": "ISC",
   "build": {
     "appId": "com.copy-manager.app",
+    "productName": "Copy manager",
+    "files": [
+      "app.js",
+      "./src/**/*",
+      "./assets/**/*"
+    ],
     "win": {
       "target": "nsis",
-      "icon": "assets/icon.ico"
+      "icon": "./assets/256x256.png"
     },
     "nsis": {
       "allowElevation": false,

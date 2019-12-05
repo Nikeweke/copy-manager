@@ -44,7 +44,7 @@ function copyFile ({index, from: fromPath, to: toPath, eventEmitter}) {
     });
   }
 
-  return new Promise(fn).catch(err => console.log(err))
+  return new Promise(fn).catch(err => { console.log(err); alert(err) })
 }
 
 function getFilesizeInBytes(filename) {
