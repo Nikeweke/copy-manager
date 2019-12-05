@@ -9,8 +9,14 @@ function init() {
 	const	maxButton     = document.getElementById('max-button')
 	const restoreButton = document.getElementById('restore-button')
 	const closeButton   = document.getElementById('close-button')
+  const infoButton    = document.getElementById('info-button')
+
 
 	let isWindowMaximized = false
+
+	infoButton.addEventListener('click', (event) => {
+		window.webContents.toggleDevTools()
+	})
 
 	// Minimize button 
 	minButton.addEventListener("click", event => {

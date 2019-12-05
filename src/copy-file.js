@@ -25,8 +25,8 @@ function copyFile ({index, from: fromPath, to: toPath, eventEmitter}) {
       transform(readStream, writeStream) {
         readStream.pipe(str).pipe(writeStream)
 
-        // when stack is clearing - stop process  
-        eventEmitter.on('clear-stack', () => {
+        // when stop-transfering - stop process  
+        eventEmitter.on('stop-transfering', () => {
           readStream.destroy()
           writeStream.destroy()
         })

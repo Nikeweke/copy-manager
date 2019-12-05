@@ -18,8 +18,7 @@ p {margin-top: 10px; color: rgba(255,255,255,0.4);}
   position: fixed;
   height: 32px;
   width: calc(100% - 2px); /*Compensate for body 1px border*/
-  background: #254053;
-  padding: 4px;
+  background: #4d385a ;
 }
 
 #main {
@@ -34,20 +33,15 @@ p {margin-top: 10px; color: rgba(255,255,255,0.4);}
   width: 100%;
   height: 100%;
   -webkit-app-region: drag;
+  display: flex;
+  justify-content: space-between;
 }
 
 #titlebar {
   color: #FFF;
 }
 #window-controls {
-  display: grid;
-  grid-template-columns: repeat(3, 46px);
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 100%;
-  font-family: "Segoe MDL2 Assets";
-  font-size: 10px;
+  display: flex;
 }
 #window-controls .button {
   grid-row: 1 / span 1;
@@ -57,18 +51,11 @@ p {margin-top: 10px; color: rgba(255,255,255,0.4);}
   width: 100%;
   height: 100%;
 }
-#window-controls #min-button {
-  grid-column: 1;
-}
-#window-controls #max-button, #window-controls #restore-button {
-  grid-column: 2;
-}
-#window-controls #close-button {
-  grid-column: 3;
-}
+
 #window-controls {
   -webkit-app-region: no-drag;
 }
+
 #window-controls .button {
   user-select: none;
   cursor: default;

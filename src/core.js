@@ -4,7 +4,6 @@ const EventEmitter = require('events')
 
 require('./window') // window functionality
 
-
 // https://jaketrent.com/post/select-directory-in-electron/
 const eventEmitter = new EventEmitter();
 const DEFAULT_ITEM = {
@@ -13,6 +12,8 @@ const DEFAULT_ITEM = {
 	to: '',
 	progress: 0
 }
+// if unix its must be forward slashes 
+const DELIMETR = process.platform === 'win32' ? `\\` : '/'
 
 new Vue({
 	el: '#main',
@@ -25,42 +26,40 @@ new Vue({
 
 	methods: {
 		pickFile(side) {
-			const dialogProp = side === 'from' ? 'openFile' : 'openDirectory' 
-
-			electronDialog.showOpenDialog({
-				properties: [dialogProp]
-			})
-			.then((path) => {
+			const dialogProp = {
+				properties: [side === 'from' ? 'openFile' : 'openDirectory']
+			}
+			
+			electronDialog.showOpenDialog(dialogProp).then((path) => {
 				if (side === 'from') {
-					const exploadedPath = path.filePaths[0].split(`\\`)
+					const exploadedPath = path.filePaths[0].split(DELIMETR)
 					this.item.filename = exploadedPath[exploadedPath.length-1]
+					this.item.to   = path.filePaths[0]
+					this.item.from = path.filePaths[0] 
+
 				} else {
-					this.item[side] = path.filePaths[0] + `\\` + this.item.filename  
+					this.item[side] = path.filePaths[0] + DELIMETR + this.item.filename  
+					this.addToStack()
 					return
 				}
-
-				this.item[side] = path.filePaths[0] 
 			})
 		},
 
 		addToStack() {
 			const {to, from} = this
-			if (to === '' || from === '') {
-				return
-			}
+			if (to === '' || from === '') return
 			this.stack.push(this.item)
 			this.item = {...DEFAULT_ITEM}
 		},
 
 		clearStack() {
-			const result = confirm('Are you sure?');
-			if (!result) return
 			this.stack = []
+			this.stopTransfering()
 		},
 
 		stopTransfering() {
 			this.isTransfering = false
-			eventEmitter.emit('clear-stack')
+			eventEmitter.emit('stop-transfering')
 		},
 
 		startTransfering() {
@@ -71,8 +70,8 @@ new Vue({
 
 			this.isTransfering = true
 
+      // making progress procents grows
 			eventEmitter.on('progress', ({index, percentage}) => {
-				// console.log('task ' + index, percentage);
 				this.stack[index].progress = percentage
 			});
 			
@@ -81,9 +80,8 @@ new Vue({
 				return accumulator.then(() => copyFile({ index, ...currentValue, eventEmitter}))  
 			}
 			
-			this.stack.reduce(reducer, Promise.resolve())
-				.then(() => {
-					alert('All files transfered \n')
+			this.stack.reduce(reducer, Promise.resolve()).then(() => {
+				this.isTransfering = false
 			})
 		}
 

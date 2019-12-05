@@ -16,6 +16,9 @@
         </div>
 
         <div id="window-controls">
+          <div class="button" id="info-button">
+            <span>&#x3f;</span>
+          </div>
           <div class="button" id="min-button">
             <span>&#9866;</span>
           </div>
@@ -53,55 +56,58 @@
         </div>
         <br><br>
     
-        <div style="text-align: right;">
+        <!-- <div style="text-align: right;">
           <button @click="addToStack" class="ui primary button">Create</button>
-        </div>
+        </div> -->
         <br>
       </div>
     </div> 
 
-    <div>
+    <label>
       <h4 class="ui header" style="color: #fff;">
         Tasks 
       </h4>
       <table v-if="stack.length !== 0" class="ui inverted celled table" >
         <thead>
           <tr>
-            <th class="four wide">FROM</th>
-            <th class="four wide">TO</th>
-            <th >PROGRESS</th>
+            <th>FROM</th>
+            <th>TO</th>
+            <th class="two wide">STATUS</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="item of stack">
             <td style="vertical-align: middle; word-break:break-all;">
-              {{ item.filename }}
-              <div class="ui grey label">
+              <div style="font-size: 1.4rem">{{ item.filename }}</div>
+              <div style="font-weight: 600; font-size: 1rem">
                 {{ item.from }}
               </div>
             </td>
             <td style="vertical-align: middle; word-break:break-all;">
-             {{ item.filename }}
-              <div class="ui grey label">
+              <div style="font-size: 1.4rem">{{ item.filename }}</div>
+              <div style="font-weight: 600; font-size: 1rem">
                 {{ item.to }}
               </div>
             </td>
             <td style="vertical-align: middle; "> 
-              <div class="ui indicating progress" style="margin: 0px;" :data-percent="item.progress">
-                <div class="bar" style="transition-duration: 300ms;" :style="{width: item.progress + '%'}">
-                  <div class="progress">{{ item.progress }}%</div>
-                </div>
-              </div>  
+              <div v-if="item.progress != 100"> 
+                <div v-show="isTransfering && item.progress > 1" class="ui small active inline loader"></div>&nbsp;&nbsp;
+                <label>{{ item.progress }}%</label>
+              </div>
+              <div v-else style="color: #21ba45">
+                <i class="check icon"></i>
+                Done
+              </div>
             </td>
           </tr>
         </tbody>
         <tfoot class="full-width">
           <tr>
             <th colspan="3">
-              <div @click="startTransfering" :class="{loading: isTransfering}" class="ui right floated small orange labeled icon button">
+              <div @click="startTransfering" :class="{disabled: isTransfering}" class="ui right floated small violet labeled icon button">
                 <i class="exchange icon"></i> Start transefering
               </div>
-              <div v-show="!isTransfering" @click="clearStack" class="ui right floated small labeled icon button" style="margin-right: 10px;">
+              <div @click="clearStack" class="ui right floated small labeled icon button" style="margin-right: 10px;">
                 <i class="trash icon"></i> Clear tasks 
               </div>
               <div v-show="isTransfering" @click="stopTransfering" class="ui right floated small labeled icon button" style="margin-right: 10px;">
