@@ -77,6 +77,7 @@ new Vue({
 			
 			// making waterfall
 			const reducer = (accumulator, currentValue, index) => {
+				if (currentValue.progress == 100) return accumulator
 				return accumulator.then(() => copyFile({ index, ...currentValue, eventEmitter}))  
 			}
 			
